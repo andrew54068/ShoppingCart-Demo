@@ -108,7 +108,7 @@ const App: React.FC = () => {
     })
 
     setTxDataWithMethodInfo(replacedTxAndMethodData)
-    setTxLink(window.location.origin + "/view?txInfo=" + encodeURIComponent(JSON.stringify(txDataWithMethodInfo)))
+    setTxLink(window.location.origin + "/view?txInfo=" + JSON.stringify(replacedTxAndMethodData))
   }
 
   const handleCopy = () => {
