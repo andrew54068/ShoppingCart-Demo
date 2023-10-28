@@ -1,31 +1,77 @@
 import { useState } from 'react';
 import Button from './Button';
+import getTxData from 'src/utils/getTxData';
+import getABI from 'src/utils/getABI';
+import getMethodData from 'src/utils/getMethodData';
 import { Flex, Tag, Heading, Input, VStack, Box, Text, Card } from '@chakra-ui/react';
 
 const App: React.FC = () => {
-  const [links, setLinks] = useState<string[]>([
+  const [txHashes, setTxHashes] = useState<string[]>([
     '',
   ]);
+  const [txDataWithMethodInfo, setTxDataWithMethodInfo] = useState<{
+    to: string,
+    data: string,
+    method: string,
+    params: any[]
+    value: number
+  }[]>([])
 
   const handleAddLink = () => {
-    setLinks((prev) => [...prev, '']);
+    setTxHashes((prev) => [...prev, '']);
   };
 
   const handleRemoveLastLink = () => {
-    setLinks((prev) => {
-      const updatedLinks = [...prev];
-      updatedLinks.pop();
-      return updatedLinks;
+    setTxHashes((prev) => {
+      const updatedTxHashes = [...prev];
+      updatedTxHashes.pop();
+      return updatedTxHashes;
     });
   }
 
   const handleChangeLink = (index: number, value: string) => {
-    setLinks((prev) => {
-      const updatedLinks = [...prev];
-      updatedLinks[index] = value;
-      return updatedLinks;
+    setTxHashes((prev) => {
+      const updatedHashes = [...prev];
+      updatedHashes[index] = value;
+      return updatedHashes;
     });
   };
+
+  const onClickGenerate = async () => {
+    const hasEmptyLink = txHashes.some((link) => link === '');
+    if (hasEmptyLink) {
+      // @todo show error
+      return undefined
+    }
+
+
+    const txDataWithMethodData: any[] = []
+
+    const txResult = await getTxData([...txHashes])
+
+    await Promise.all(
+      txResult.map(async (txData) => {
+        let newTxDataWithMethodData = {}
+
+        if (txData) {
+          const callData = txData.data
+          const contractABI = await getABI(txData?.to);
+          const methodData = getMethodData(contractABI, callData)
+
+          newTxDataWithMethodData = {
+            ...txData,
+            ...methodData
+          }
+        }
+
+        txDataWithMethodData.push(newTxDataWithMethodData)
+
+      })
+    )
+
+    setTxDataWithMethodInfo(txDataWithMethodData)
+    console.log('txDataWithMethodData :', txDataWithMethodData);
+  }
 
   return (
     <VStack
@@ -39,14 +85,14 @@ const App: React.FC = () => {
         Build Your Link
       </Heading>
       <Text fontSize="lg"  >
-        Enter etherscan link
+        Enter Transaction Hash
       </Text>
-      {links.map((link, index) => (
+      {txHashes.map((hash, index) => (
         <Input
           key={index}
-          value={link}
+          value={hash}
           onChange={(e) => handleChangeLink(index, e.target.value)}
-          placeholder="Enter link here"
+          placeholder="Enter transaction hash here"
         />
       ))}
       <Flex gap="4px">
@@ -68,11 +114,11 @@ const App: React.FC = () => {
 
         <Box mb="20px">
           <Input
-            placeholder='Your link will be shown here'
+            value={txDataWithMethodInfo ? window.location.host + "/?txInfo=" + JSON.stringify(txDataWithMethodInfo) : 'Your link will be shown here'}
             isReadOnly
           />
         </Box>
-        <Button >Generate Link</Button>
+        <Button onClick={onClickGenerate}>Generate Link</Button>
         <Button colorScheme="twitter" variant="plain">post on Twitter</Button>
       </Card>
     </VStack>
