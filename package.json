@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@blocto/sdk": "^0.7.0",
+    "@blocto/web-chakra-theme": "^1.2.9",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",

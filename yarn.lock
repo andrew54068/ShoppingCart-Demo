@@ -234,6 +234,11 @@
     eip1193-provider "^1.0.1"
     js-sha3 "^0.8.0"
 
+"@blocto/web-chakra-theme@^1.2.9":
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/@blocto/web-chakra-theme/-/web-chakra-theme-1.2.9.tgz#986963fb91979120eb5c663e9623e4c3a0146a35"
+  integrity sha512-JPl4OSCl503rD5TIMQKYkxsACit2z/EvAdTMqH9OGlRm55icFWYwwIzw3vtBs9loVdTg5/BjT7NFwC5nYYgmqw==
+
 "@chakra-ui/accordion@2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@chakra-ui/accordion/-/accordion-2.3.1.tgz#a326509e286a5c4e8478de9bc2b4b05017039e6b"

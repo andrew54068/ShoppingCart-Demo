@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes, } from 'react-router-dom';
+import theme from "./theme";
 import { ChakraProvider, Box } from '@chakra-ui/react';
 import './App.css';
 // import { web3 } from './services/evm'
-import Header from './components/Header'
+import Navbar from './components/Navbar'
 import View from './components/View'
 import BuildLink from './components/BuildLink'
 import NotFound from './components/NotFound'
@@ -25,10 +26,10 @@ function App() {
   }, [])
   return (
     <GlobalProvider>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <BrowserRouter>
           <Box margin="0 auto" width="100%">
-            <Header />
+            <Navbar />
             <Box margin="0 auto" maxW="560px" minH="100vh">
 
               <Routes>
