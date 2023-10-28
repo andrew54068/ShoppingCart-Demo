@@ -100,9 +100,9 @@ export const supportedChains = [
 const sdkConfig = {
   ethereum: {
     // (required) chainId to be used
-    chainId: "42161", // Arb Goerli: 421613
+    chainId: "10", // Arb Goerli: 421613
     // (required for Ethereum) JSON RPC endpoint
-    rpc: process.env.REACT_APP_ARB_RPC || "https://arb1.arbitrum.io/rpc",
+    rpc: process.env.VITE_APP_RPC || "https://mainnet.optimism.io",
   },
 };
 

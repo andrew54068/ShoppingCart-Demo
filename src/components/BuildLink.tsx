@@ -1,14 +1,23 @@
 import { useState } from 'react';
-import { Button, Input, VStack, Box, Text } from '@chakra-ui/react';
+import Button from './Button';
+import { Flex, Tag, Heading, Input, VStack, Box, Text, Card } from '@chakra-ui/react';
 
 const App: React.FC = () => {
   const [links, setLinks] = useState<string[]>([
-    'https://arbiscan.io/tx/0x2ee9d4f3',
+    '',
   ]);
 
   const handleAddLink = () => {
     setLinks((prev) => [...prev, '']);
   };
+
+  const handleRemoveLastLink = () => {
+    setLinks((prev) => {
+      const updatedLinks = [...prev];
+      updatedLinks.pop();
+      return updatedLinks;
+    });
+  }
 
   const handleChangeLink = (index: number, value: string) => {
     setLinks((prev) => {
@@ -19,11 +28,17 @@ const App: React.FC = () => {
   };
 
   return (
-    <VStack spacing={6} margin="auto" paddingTop="50px" px="40px">
-      <Text fontSize="2xl" fontWeight="bold">
+    <VStack
+      spacing={3}
+      margin="0 auto"
+      mt="75px"
+      pt="50px"
+      px="20px"
+    >
+      <Heading as="h2"  >
         Build Your Link
-      </Text>
-      <Text fontSize="lg" fontWeight="bold">
+      </Heading>
+      <Text fontSize="lg"  >
         Enter etherscan link
       </Text>
       {links.map((link, index) => (
@@ -34,15 +49,32 @@ const App: React.FC = () => {
           placeholder="Enter link here"
         />
       ))}
-      <Button onClick={handleAddLink}>Add a tx link</Button>
-      <Button colorScheme="blue">Generate Link</Button>
-      <Box border="1px" borderColor="gray.300" padding="10px">
-        <Input
-          placeholder="https://cart.blocto.app/?cartid=012"
-          isReadOnly
-        />
-      </Box>
-      <Button colorScheme="twitter">post on Twitter</Button>
+      <Flex gap="4px">
+        <Tag onClick={handleAddLink} cursor="pointer">+</Tag>
+        <Tag onClick={handleRemoveLastLink} cursor="pointer">-</Tag>
+      </Flex>
+      <Card
+        boxShadow='2xl'
+        p="20px"
+        w="100%"
+        pos="fixed"
+        bottom="0"
+        left="0"
+        right="0">
+        <Text fontSize="size.heading.3" mb="20px">
+          Your Link For Sharing
+        </Text>
+
+
+        <Box mb="20px">
+          <Input
+            placeholder='Your link will be shown here'
+            isReadOnly
+          />
+        </Box>
+        <Button >Generate Link</Button>
+        <Button colorScheme="twitter" variant="plain">post on Twitter</Button>
+      </Card>
     </VStack>
   );
 };

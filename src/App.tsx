@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes, } from 'react-router-dom';
 import theme from "./theme";
 import { ChakraProvider, Box } from '@chakra-ui/react';
 import './App.css';
-// import { web3 } from './services/evm'
+import { web3 } from './services/evm'
 import Navbar from './components/Navbar'
 import View from './components/View'
 import BuildLink from './components/BuildLink'
@@ -15,13 +15,13 @@ function App() {
   // const [count, setCount] = useState(0)
 
   useEffect(() => {
-    // async function getReceipt() {
-    //   const txHash = '0x0423964817241263999417cbbdd439d58907772b6c44a6e42115093757aa5545'
-    //   const txResult = await web3.eth.getTransaction(txHash);
-    //   console.log('txResult :', txResult);
-    // }
+    async function getReceipt() {
+      const txHash = '0xde462c6abadbb97f5fd94a84725380d8109ea92498a314290ff92824d00bfd38'
+      const txResult = await web3.eth.getTransaction(txHash);
+      console.log('txResult :', txResult);
+    }
 
-    // getReceipt()
+    getReceipt()
 
   }, [])
   return (

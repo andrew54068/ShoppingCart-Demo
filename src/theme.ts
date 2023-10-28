@@ -27,7 +27,7 @@ const theme = extendTheme(
           lineHeight: "line.height.body.3",
           color: "font.primary",
           textRendering: "geometricPrecision",
-          bg: "#efefef",
+          bg: "white",
         },
         "body.fontLoaded": {
           fontFamily: "boFontFamily.base",
@@ -64,7 +64,7 @@ const theme = extendTheme(
             width: "100%",
             height: "54px",
             py: "space.m",
-            bg: "#3246FA",
+            bg: "interaction.primary",
             color: "font.inverse",
             borderRadius: "12px",
             _hover: {
