@@ -8,7 +8,7 @@ import { ADDR_PLACEHOLDER } from 'src/constants';
 import getMethodData from 'src/utils/getMethodData';
 import MinusIcon from 'src/assets/minus.svg?react';
 import Input from './Input';
-import { useToast, Button as ChakraButton, Flex, Tag, Heading, VStack, Box, Text, Card, useEditable } from '@chakra-ui/react';
+import { useToast, Button as ChakraButton, Flex, Tag, VStack, Box, Text, Card } from '@chakra-ui/react';
 
 const generateReadableCallData = (methodData: any) => {
   return methodData.name
