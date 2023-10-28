@@ -1,0 +1,1 @@
+export const ADDR_PLACEHOLDER = '_ADDR_PLACEHOLDER_'

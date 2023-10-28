@@ -10,7 +10,8 @@ export default async function getTxInfo(txHashes: string[]):
       return {
         data: txResult.data,
         to: txResult.to,
-        value: `${Number(txResult.value)}`
+        value: `${Number(txResult.value)}`,
+        from: txResult.from,
       };
     })
   );

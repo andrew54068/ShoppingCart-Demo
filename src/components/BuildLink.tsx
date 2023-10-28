@@ -2,7 +2,9 @@ import { useState } from 'react';
 import Button from './Button';
 import getTxInfo from 'src/utils/getTxInfo';
 import getABI from 'src/utils/getABI';
+import strip0x from 'src/utils/strip0x';
 import copy from 'copy-text-to-clipboard';
+import { ADDR_PLACEHOLDER } from 'src/constants';
 import getMethodData from 'src/utils/getMethodData';
 import { InputGroup, InputRightElement, useToast, Button as ChakraButton, Flex, Tag, Heading, Input, VStack, Box, Text, Card } from '@chakra-ui/react';
 
@@ -91,7 +93,18 @@ const App: React.FC = () => {
     }
     await Promise.all(requests)
 
-    setTxDataWithMethodInfo(txDataWithMethodData)
+    const replacedTxAndMethodData = txDataWithMethodData.map(methodData => {
+      const { data, from } = methodData
+      let tempData = data
+
+      if (tempData.includes(strip0x(from))) {
+        // replace all from with ADDR_PLACEHOLDER
+        tempData = tempData.replace(new RegExp(strip0x(from), 'g'), ADDR_PLACEHOLDER)
+      }
+      return { ...methodData, data: tempData }
+    })
+
+    setTxDataWithMethodInfo(replacedTxAndMethodData)
   }
 
   const handleCopy = () => {
@@ -106,7 +119,8 @@ const App: React.FC = () => {
   }
   return (
     <VStack
-      spacing={3}
+      spacing="2"
+      alignItems="flex-start"
       margin="0 auto"
       mt="75px"
       pt="50px"
@@ -119,22 +133,25 @@ const App: React.FC = () => {
         Enter Transaction Hash
       </Text>
       {txHashes.map((hash, index) => (
-        <Flex key={`flex ${index}`} alignItems='center' columnGap='10px'>
-          <Input
-            key={`input ${index}`}
-            value={hash}
-            onChange={(e) => handleChangeLink(index, e.target.value)}
-            placeholder="Enter transaction hash here"
+        <>
+          <Flex key={`flex ${index}`} alignItems='center' columnGap='10px' w="100%">
+            <Input
+              key={`input ${index}`}
+              value={hash}
+              onChange={(e) => handleChangeLink(index, e.target.value)}
+              placeholder="Enter transaction hash here"
             />
-            {
-              txDataWithMethodInfo.length > index && 
-              <Text key={`Text ${index}`}>
-                  {txDataWithMethodInfo[index].readableCallData}
-              </Text>
-            }
-        </Flex>
+
+          </Flex>
+          {
+            txDataWithMethodInfo.length > index &&
+            <Tag key={`Text ${index}`} variant='outline' colorScheme="blue">
+              {txDataWithMethodInfo[index].readableCallData}
+            </Tag>
+          }
+        </>
       ))}
-      <Flex gap="4px">
+      <Flex gap="4px" w="100%" justifyContent="center">
         <Tag onClick={handleAddLink} cursor="pointer">+</Tag>
         <Tag onClick={handleRemoveLastLink} cursor="pointer">-</Tag>
       </Flex>
