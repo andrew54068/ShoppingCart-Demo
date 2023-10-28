@@ -49,7 +49,6 @@ const ViewTransaction: React.FC = () => {
         data: tempTx
       }
     })
-    console.log('transformedTxInfo :', transformedTxInfo);
     setDisplayTxInfo(transformedTxInfo)
   }, [account, location.search])
 

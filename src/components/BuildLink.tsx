@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import Button from './Button';
 import getTxInfo from 'src/utils/getTxInfo';
 import getABI from 'src/utils/getABI';
@@ -8,7 +8,7 @@ import { ADDR_PLACEHOLDER } from 'src/constants';
 import getMethodData from 'src/utils/getMethodData';
 import MinusIcon from 'src/assets/minus.svg?react';
 import Input from './Input';
-import { useToast, Button as ChakraButton, Flex, Tag, Heading, VStack, Box, Text, Card } from '@chakra-ui/react';
+import { useToast, Button as ChakraButton, Flex, Tag, Heading, VStack, Box, Text, Card, useEditable } from '@chakra-ui/react';
 
 const generateReadableCallData = (methodData: any) => {
   return methodData.name
@@ -20,6 +20,8 @@ const App: React.FC = () => {
   ]);
 
   const toast = useToast()
+  const [txLink, setTxLink] = useState<string>('')
+  const [readyForSharing, setReadyForSharing] = useState<boolean>(false)
   const [txDataWithMethodInfo, setTxDataWithMethodInfo] = useState<{
     to: string,
     data: string,
@@ -28,17 +30,14 @@ const App: React.FC = () => {
     readableCallData: string,
   }[]>([])
 
+  useEffect(() => {
+    setReadyForSharing(!!txLink)
+  }, [txLink])
+
   const handleAddLink = () => {
     setTxHashes((prev) => [...prev, '']);
+    setTxLink('')
   };
-
-  // const handleRemoveLastLink = () => {
-  //   setTxHashes((prev) => {
-  //     const updatedTxHashes = [...prev];
-  //     updatedTxHashes.pop();
-  //     return updatedTxHashes;
-  //   });
-  // }
 
   const handleChangeLink = (index: number, value: string) => {
     setTxHashes((prev) => {
@@ -49,12 +48,14 @@ const App: React.FC = () => {
   };
 
   const onClickGenerate = async () => {
+    //@todo: add loading state
     const hasEmptyLink = txHashes.some((link) => link === '');
-    if (hasEmptyLink) {
+    const hasInvalidLink = txHashes.some((link) => !link.startsWith('0x') || link.length !== 66);
+
+    if (hasEmptyLink || hasInvalidLink) {
       // @todo show error
       return undefined
     }
-
 
     const txDataWithMethodData: any[] = []
 
@@ -107,6 +108,7 @@ const App: React.FC = () => {
     })
 
     setTxDataWithMethodInfo(replacedTxAndMethodData)
+    setTxLink(window.location.origin + "/view?txInfo=" + encodeURIComponent(JSON.stringify(txDataWithMethodInfo)))
   }
 
   const handleCopy = () => {
@@ -126,6 +128,16 @@ const App: React.FC = () => {
       updatedHashes.splice(index, 1);
       return updatedHashes;
     });
+    setTxLink('')
+  }
+
+  function shareToTwitter(text: string, url: string) {
+    const encodedText = encodeURIComponent(text);
+    const encodedURL = encodeURIComponent(url);
+
+    const twitterURL = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedURL}`;
+
+    window.open(twitterURL, '_blank');
   }
 
   return (
@@ -161,8 +173,8 @@ const App: React.FC = () => {
           </Flex>
           {
             txDataWithMethodInfo.length > index &&
-            <Tag key={`Text ${index}`} variant='outline' colorScheme="blue">
-              {txDataWithMethodInfo[index].readableCallData}
+            <Tag key={`Text ${index}`} variant='outline' colorScheme="blue" mb="space.xs">
+              Possible Intent: {txDataWithMethodInfo[index].readableCallData}
             </Tag>
           }
         </Fragment>
@@ -189,15 +201,17 @@ const App: React.FC = () => {
 
         <Box mb="20px">
           <Input
-            rightElement={
-              <ChakraButton size='sm' onClick={handleCopy}>
-                Copy
-              </ChakraButton>
-            }
+            value={
+              txDataWithMethodInfo.length ?
+                txLink :
+                'Your link will be shown here'}
           />
         </Box>
-        <Button onClick={onClickGenerate}>Generate Link</Button>
-        <Button colorScheme="twitter" variant="plain">post on Twitter</Button>
+        {readyForSharing ? <>
+          <Button mb="space.m" onClick={handleCopy}> Copy </Button>
+          <Button colorScheme="twitter" variant="secondary" onClick={() => shareToTwitter('Share the link', txLink)}>Post on Twitter</Button></> :
+          <Button onClick={onClickGenerate}>Generate Link</Button>
+        }
       </Card>
     </VStack >
   );
