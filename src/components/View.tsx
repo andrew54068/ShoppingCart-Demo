@@ -81,18 +81,17 @@ const ViewTransaction: React.FC = () => {
   }
 
   return (
-    <Box p="20px" mt="75px">
+    <Box p="20px" mt="75px" mb="75px">
       <Text fontSize="xl" mb={5}>View Your Transaction</Text>
 
       {
-        account ? <Accordion allowMultiple defaultIndex={0}>
+        account ? <Accordion defaultIndex={[0]} allowMultiple>
           {
             displayTxInfo.map((tx, index) => (
               <VStack key={index} align="start" spacing={3} mb={4}
                 borderRadius="12px"
                 boxShadow="0px 0px 20px 0px rgba(35, 37, 40, 0.05);"
               >
-
 
                 <AccordionItem border={0} width="100%">
                   <h2>
@@ -142,7 +141,7 @@ const ViewTransaction: React.FC = () => {
       <Box pos="fixed" bottom="0" left="0" right="0" bg="white" p="20px" boxShadow="2xl">
         <Button onClick={onClickSendTx} isDisabled={!account} isLoading={isLoading}>Send Tx</Button>
       </Box>
-    </Box>
+    </Box >
   );
 };
 
