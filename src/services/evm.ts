@@ -30,12 +30,12 @@ export const supportedChains = [
   //   faucet: "https://goerlifaucet.com/",
   //   environment: "testnet",
   // },
-  {
-    name: "Arbitrum Mainnet",
-    chainId: "0xa4b1",
-    rpcUrls: ["https://arb1.arbitrum.io/rpc"],
-    environment: "mainnet",
-  },
+  // {
+  //   name: "Arbitrum Mainnet",
+  //   chainId: "0xa4b1",
+  //   rpcUrls: ["https://arb1.arbitrum.io/rpc"],
+  //   environment: "mainnet",
+  // },
   // {
   //   name: "Arbitrum Testnet",
   //   chainId: "0x66eed",
@@ -88,19 +88,19 @@ export const supportedChains = [
   //   rpcUrls: ["https://mainnet.optimism.io"],
   //   environment: "mainnet",
   // },
-  // {
-  //   name: "Optimism Testnet",
-  //   chainId: "0x01a4",
-  //   rpcUrls: ["https://goerli.optimism.io"],
-  //   faucet: "https://faucet.paradigm.xyz/",
-  //   environment: "testnet",
-  // },
+  {
+    name: "Optimism Testnet",
+    chainId: "0x01a4",
+    rpcUrls: [import.meta.env.VITE_APP_RPC],
+    faucet: "https://faucet.paradigm.xyz/",
+    environment: "testnet",
+  },
 ];
 
 const sdkConfig = {
   ethereum: {
     // (required) chainId to be used
-    chainId: "10", // Arb Goerli: 421613
+    chainId: "420", // Arb Goerli: 421613
     // (required for Ethereum) JSON RPC endpoint
     rpc: import.meta.env.VITE_APP_RPC || "https://mainnet.optimism.io",
   },
