@@ -82,25 +82,25 @@ export const supportedChains = [
   //   faucet: "https://faucet.polygon.technology/",
   //   environment: "testnet",
   // },
-  // {
-  //   name: "Optimism Mainnet",
-  //   chainId: "0x000a",
-  //   rpcUrls: ["https://mainnet.optimism.io"],
-  //   environment: "mainnet",
-  // },
   {
-    name: "Optimism Testnet",
-    chainId: "0x01a4",
+    name: "Optimism Mainnet",
+    chainId: "0xa",
     rpcUrls: [import.meta.env.VITE_APP_RPC],
-    faucet: "https://faucet.paradigm.xyz/",
-    environment: "testnet",
+    environment: "mainnet",
   },
+  // {
+  //   name: "Optimism Testnet",
+  //   chainId: "0x01a4",
+  //   rpcUrls: [import.meta.env.VITE_APP_RPC],
+  //   faucet: "https://faucet.paradigm.xyz/",
+  //   environment: "testnet",
+  // },
 ];
 
 const sdkConfig = {
   ethereum: {
     // (required) chainId to be used
-    chainId: "420", // Arb Goerli: 421613
+    chainId: "0xa", // Arb Goerli: 421613
     // (required for Ethereum) JSON RPC endpoint
     rpc: import.meta.env.VITE_APP_RPC || "https://mainnet.optimism.io",
   },
@@ -111,7 +111,7 @@ const bloctoSDK = new BloctoSDK({
   appId: import.meta.env.VITE_APP_DAPP_ID,
 }) as ExtendedEvmBloctoSDK;
 
-bloctoSDK.ethereum.loadSwitchableNetwork(supportedChains);
+// bloctoSDK.ethereum.loadSwitchableNetwork(supportedChains);
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -133,7 +133,7 @@ export const useEthereum = (): {
       setAccount(accounts[0]);
       bloctoSDK.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0xa4b1" }],
+        params: [{ chainId: "0x000a" }],
       });
     };
     const handleChainChanged = (chainId: string) => {
