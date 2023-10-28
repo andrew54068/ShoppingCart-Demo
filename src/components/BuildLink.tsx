@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import Button from './Button';
 import getTxInfo from 'src/utils/getTxInfo';
 import getABI from 'src/utils/getABI';
@@ -6,7 +6,9 @@ import strip0x from 'src/utils/strip0x';
 import copy from 'copy-text-to-clipboard';
 import { ADDR_PLACEHOLDER } from 'src/constants';
 import getMethodData from 'src/utils/getMethodData';
-import { InputGroup, InputRightElement, useToast, Button as ChakraButton, Flex, Tag, Heading, Input, VStack, Box, Text, Card } from '@chakra-ui/react';
+import MinusIcon from 'src/assets/minus.svg?react';
+import Input from './Input';
+import { useToast, Button as ChakraButton, Flex, Tag, Heading, VStack, Box, Text, Card } from '@chakra-ui/react';
 
 const generateReadableCallData = (methodData: any) => {
   return methodData.name
@@ -30,13 +32,13 @@ const App: React.FC = () => {
     setTxHashes((prev) => [...prev, '']);
   };
 
-  const handleRemoveLastLink = () => {
-    setTxHashes((prev) => {
-      const updatedTxHashes = [...prev];
-      updatedTxHashes.pop();
-      return updatedTxHashes;
-    });
-  }
+  // const handleRemoveLastLink = () => {
+  //   setTxHashes((prev) => {
+  //     const updatedTxHashes = [...prev];
+  //     updatedTxHashes.pop();
+  //     return updatedTxHashes;
+  //   });
+  // }
 
   const handleChangeLink = (index: number, value: string) => {
     setTxHashes((prev) => {
@@ -117,31 +119,45 @@ const App: React.FC = () => {
       position: 'top'
     })
   }
+
+  const onRemoveTx = (index) => () => {
+    setTxHashes((prev) => {
+      const updatedHashes = [...prev];
+      updatedHashes.splice(index, 1);
+      return updatedHashes;
+    });
+  }
+
   return (
     <VStack
-      spacing="2"
+      gap="0"
       alignItems="flex-start"
       margin="0 auto"
       mt="75px"
-      pt="50px"
+      pt="space.3xl"
       px="20px"
     >
-      <Heading as="h2"  >
+      <Heading as="h3" fontSize="size.heading.3" mb="space.m">
         Build Your Link
       </Heading>
-      <Text fontSize="lg"  >
+      <Text fontSize="lg" mb="space.m" >
         Enter Transaction Hash
       </Text>
       {txHashes.map((hash, index) => (
-        <>
-          <Flex key={`flex ${index}`} alignItems='center' columnGap='10px' w="100%">
+        <Fragment key={`${index}-${hash}`} >
+          <Flex alignItems='center' w="100%" mb="space.xs">
             <Input
-              key={`input ${index}`}
               value={hash}
               onChange={(e) => handleChangeLink(index, e.target.value)}
               placeholder="Enter transaction hash here"
+              rightElement={
+                <ChakraButton variant="secondary" w="32px" h="32px" color="icon.primary" p="space.m" minWidth="0" borderRadius="6px" onClick={onRemoveTx(index)} >
+                  <Box pos="absolute" left="50%" top="50%" transform="translate(-50%,-50%)" >
+                    <MinusIcon width="16px" height="16px" />
+                  </Box>
+                </ChakraButton>
+              }
             />
-
           </Flex>
           {
             txDataWithMethodInfo.length > index &&
@@ -149,11 +165,14 @@ const App: React.FC = () => {
               {txDataWithMethodInfo[index].readableCallData}
             </Tag>
           }
-        </>
+        </Fragment>
       ))}
       <Flex gap="4px" w="100%" justifyContent="center">
-        <Tag onClick={handleAddLink} cursor="pointer">+</Tag>
-        <Tag onClick={handleRemoveLastLink} cursor="pointer">-</Tag>
+        <Button variant="secondary" onClick={handleAddLink}>
+          Add
+        </Button>
+
+        {/* <Tag onClick={handleRemoveLastLink} cursor="pointer">-</Tag> */}
       </Flex>
       <Card
         boxShadow='2xl'
@@ -169,24 +188,18 @@ const App: React.FC = () => {
 
 
         <Box mb="20px">
-          <InputGroup >
-            <Input
-              pr='4.5rem'
-
-              value={txDataWithMethodInfo.length ? window.location.origin + "/view?txInfo=" + JSON.stringify(txDataWithMethodInfo) : 'Your link will be shown here'}
-              isReadOnly
-            />
-            <InputRightElement w="4.5rem">
-              <ChakraButton h='1.75rem' size='sm' onClick={handleCopy}>
+          <Input
+            rightElement={
+              <ChakraButton size='sm' onClick={handleCopy}>
                 Copy
               </ChakraButton>
-            </InputRightElement>
-          </InputGroup>
+            }
+          />
         </Box>
         <Button onClick={onClickGenerate}>Generate Link</Button>
         <Button colorScheme="twitter" variant="plain">post on Twitter</Button>
       </Card>
-    </VStack>
+    </VStack >
   );
 };
 
