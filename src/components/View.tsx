@@ -3,7 +3,9 @@ import { Flex, Box, VStack, Text, Divider } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 import Button from 'src/components/Button'
 import queryString from 'query-string';
+import { bloctoSDK } from 'src/services/evm';
 import strip0x from 'src/utils/strip0x';
+import toHex from 'src/utils/toHex';
 import { useEthereum } from "src/services/evm";
 
 import { ADDR_PLACEHOLDER } from 'src/constants';
@@ -53,8 +55,24 @@ const ViewTransaction: React.FC = () => {
 
 
 
-  const onClickSendTx = () => {
+  const onClickSendTx = async () => {
     //@todo: send tx.
+
+    const batchTransactions = displayTxInfo.map((tx) => {
+      return {
+        from: account,
+        to: tx.to,
+        data: tx.data,
+        value: tx.value ? `0x${toHex(Number(tx.value))}` : '0x0'
+      }
+    })
+
+    await bloctoSDK.ethereum.request({
+      method: "blocto_sendBatchTransaction",
+      params: batchTransactions,
+    });
+
+
   }
 
   return (
