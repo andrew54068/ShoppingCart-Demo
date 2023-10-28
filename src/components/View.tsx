@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AccordionPanel, AccordionIcon, Accordion, AccordionItem, AccordionButton, Flex, Box, VStack, Text, Divider } from '@chakra-ui/react';
+import { AccordionPanel, AccordionIcon, Accordion, AccordionItem, AccordionButton, Flex, Box, VStack, Text } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 import Button from 'src/components/Button'
 import queryString from 'query-string';
