@@ -2,13 +2,16 @@ import { useState } from 'react';
 import Button from './Button';
 import getTxData from 'src/utils/getTxData';
 import getABI from 'src/utils/getABI';
+import copy from 'copy-text-to-clipboard';
 import getMethodData from 'src/utils/getMethodData';
-import { Flex, Tag, Heading, Input, VStack, Box, Text, Card } from '@chakra-ui/react';
+import { InputGroup, InputRightElement, useToast, Button as ChakraButton, Flex, Tag, Heading, Input, VStack, Box, Text, Card } from '@chakra-ui/react';
 
 const App: React.FC = () => {
   const [txHashes, setTxHashes] = useState<string[]>([
     '',
   ]);
+
+  const toast = useToast()
   const [txDataWithMethodInfo, setTxDataWithMethodInfo] = useState<{
     to: string,
     data: string,
@@ -73,6 +76,16 @@ const App: React.FC = () => {
     console.log('txDataWithMethodData :', txDataWithMethodData);
   }
 
+  const handleCopy = () => {
+    const shareUrl = window.location.host + "/view?txInfo=" + JSON.stringify(txDataWithMethodInfo)
+    copy(shareUrl)
+    toast({
+      description: "Your link has been copied to clipboard.",
+      status: 'success',
+      duration: 3000,
+      position: 'top'
+    })
+  }
   return (
     <VStack
       spacing={3}
@@ -113,10 +126,19 @@ const App: React.FC = () => {
 
 
         <Box mb="20px">
-          <Input
-            value={txDataWithMethodInfo ? window.location.host + "/?txInfo=" + JSON.stringify(txDataWithMethodInfo) : 'Your link will be shown here'}
-            isReadOnly
-          />
+          <InputGroup >
+            <Input
+              pr='4.5rem'
+
+              value={txDataWithMethodInfo.length ? window.location.host + "/view?txInfo=" + JSON.stringify(txDataWithMethodInfo) : 'Your link will be shown here'}
+              isReadOnly
+            />
+            <InputRightElement w="4.5rem">
+              <ChakraButton h='1.75rem' size='sm' onClick={handleCopy}>
+                Copy
+              </ChakraButton>
+            </InputRightElement>
+          </InputGroup>
         </Box>
         <Button onClick={onClickGenerate}>Generate Link</Button>
         <Button colorScheme="twitter" variant="plain">post on Twitter</Button>

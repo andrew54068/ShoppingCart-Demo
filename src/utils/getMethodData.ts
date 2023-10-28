@@ -24,7 +24,7 @@ export default function getMethodData(contractABI, callData?: string) {
       parameterNameValues.push(
         {
           name: input.name,
-          value: `${Number(decoded[index.toString()])}`
+          value: `${decoded[index.toString()]}`
         }
       )
     }
