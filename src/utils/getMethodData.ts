@@ -1,42 +1,32 @@
+
+import abiDecoder from 'abi-decoder';
 import { web3 } from 'src/services/evm';
+import getABI from './getABI';
 
-export default function getMethodData(contractABI, callData?: string) {
-  if (!callData) return ''
-  // const contract = new web3.eth.Contract(contractABI);
+export default async function getMethodData(contractABI, chainId: number, contract: string, callData?: string) {
+  if (!callData) return null
+  if (!contractABI || contractABI == '') return null
 
-  const functionSelector = callData.slice(0, 10);
-  let functionAbi;
-  for (const item of contractABI) {
-    if (item.type === 'function' && functionSelector === web3.eth.abi.encodeFunctionSignature(item)) {
-      functionAbi = item;
-      break;
+  abiDecoder.addABI(contractABI)
+
+  const decodedData = abiDecoder.decodeMethod(callData);
+  console.log(`💥 decodedData: ${JSON.stringify(decodedData, null, '  ')}`);
+
+  abiDecoder.removeABI(contractABI)
+  if (!decodedData || Object.keys(decodedData).length === 0) {
+    // might be due to it's proxy contract
+    const proxyContract = new web3.eth.Contract(contractABI, contract)
+    const implementationAddress = await proxyContract.methods.implementation().call()
+    console.log(`💥 implementationAddress: ${JSON.stringify(implementationAddress, null, '  ')}`);
+    if (typeof implementationAddress === 'string') {
+      const impABI = await getABI(chainId, implementationAddress)
+      abiDecoder.addABI(impABI)
+      const decodedData = abiDecoder.decodeMethod(callData);
+      abiDecoder.removeABI(impABI)
+      return decodedData
     }
+    return null
   }
 
-
-  if (functionAbi) {
-    const decoded = web3.eth.abi.decodeParameters(functionAbi.inputs, callData.slice(10));
-
-    const parameterNameValues: Array<object> = []
-
-    for (const [index, input] of functionAbi.inputs.entries()) {
-      // parameterNameValues.push(`${input.name}: ${decoded[index.toString()]}`)
-      parameterNameValues.push(
-        {
-          name: input.name,
-          value: `${decoded[index.toString()]}`
-        }
-      )
-    }
-
-    return {
-      name: functionAbi.name,
-      parameters: parameterNameValues
-    }
-
-
-  } else {
-    console.error("Function ABI not found for selector:", functionSelector);
-    return
-  }
+  return decodedData
 } 

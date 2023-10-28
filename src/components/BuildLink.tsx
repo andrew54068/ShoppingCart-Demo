@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import Button from './Button';
-import getTxData from 'src/utils/getTxData';
+import getTxInfo from 'src/utils/getTxInfo';
 import getABI from 'src/utils/getABI';
 import copy from 'copy-text-to-clipboard';
 import getMethodData from 'src/utils/getMethodData';
 import { InputGroup, InputRightElement, useToast, Button as ChakraButton, Flex, Tag, Heading, Input, VStack, Box, Text, Card } from '@chakra-ui/react';
+
+const generateReadableCallData = (methodData: any) => {
+  return methodData.name
+}
 
 const App: React.FC = () => {
   const [txHashes, setTxHashes] = useState<string[]>([
@@ -15,9 +19,9 @@ const App: React.FC = () => {
   const [txDataWithMethodInfo, setTxDataWithMethodInfo] = useState<{
     to: string,
     data: string,
-    method: string,
-    params: any[]
-    value: number
+    value: number,
+    methodData: any,
+    readableCallData: string,
   }[]>([])
 
   const handleAddLink = () => {
@@ -50,30 +54,44 @@ const App: React.FC = () => {
 
     const txDataWithMethodData: any[] = []
 
-    const txResult = await getTxData([...txHashes])
+    const txResult = await getTxInfo([...txHashes])
 
-    await Promise.all(
-      txResult.map(async (txData) => {
+    console.log(`💥 txResult: ${JSON.stringify(txResult, null, '  ')}`);
+
+    const chainId = 10
+
+    const requests: any[] = []
+    for (const txInfo of txResult) {
+      const request = async (txInfo) => {
         let newTxDataWithMethodData = {}
 
-        if (txData) {
-          const callData = txData.data
-          const contractABI = await getABI(txData?.to);
-          const methodData = getMethodData(contractABI, callData)
+        console.log(`💥 txInfo: ${JSON.stringify(txInfo, null, '  ')}`);
+
+        const contract = txInfo?.to
+        if (txInfo && txInfo.data && txInfo.data !== '0x' && contract) {
+          const callData = txInfo.data
+          const contractABI = await getABI(chainId, contract);
+          console.log(`💥 callData: ${JSON.stringify(callData, null, '  ')}`);
+          const methodData = await getMethodData(contractABI, chainId, contract, callData)
+
+          console.log(`💥 methodData: ${JSON.stringify(methodData, null, '  ')}`);
+
+          const readableCallData = generateReadableCallData(methodData)
 
           newTxDataWithMethodData = {
-            ...txData,
-            ...methodData
+            ...txInfo,
+            methodData,
+            readableCallData
           }
         }
 
         txDataWithMethodData.push(newTxDataWithMethodData)
-
-      })
-    )
+      }
+      requests.push(request(txInfo))
+    }
+    await Promise.all(requests)
 
     setTxDataWithMethodInfo(txDataWithMethodData)
-    console.log('txDataWithMethodData :', txDataWithMethodData);
   }
 
   const handleCopy = () => {
@@ -101,12 +119,20 @@ const App: React.FC = () => {
         Enter Transaction Hash
       </Text>
       {txHashes.map((hash, index) => (
-        <Input
-          key={index}
-          value={hash}
-          onChange={(e) => handleChangeLink(index, e.target.value)}
-          placeholder="Enter transaction hash here"
-        />
+        <Flex key={`flex ${index}`} alignItems='center' columnGap='10px'>
+          <Input
+            key={`input ${index}`}
+            value={hash}
+            onChange={(e) => handleChangeLink(index, e.target.value)}
+            placeholder="Enter transaction hash here"
+            />
+            {
+              txDataWithMethodInfo.length > index && 
+              <Text key={`Text ${index}`}>
+                  {txDataWithMethodInfo[index].readableCallData}
+              </Text>
+            }
+        </Flex>
       ))}
       <Flex gap="4px">
         <Tag onClick={handleAddLink} cursor="pointer">+</Tag>

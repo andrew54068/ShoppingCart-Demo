@@ -14,7 +14,7 @@ export interface ExtendedEthereumProviderInterface
 export interface ExtendedEvmBloctoSDK extends BloctoSDK {
   ethereum: ExtendedEthereumProviderInterface;
 }
-// const isMainnet = process.env.REACT_APP_NETWORK === "mainnet";
+// const isMainnet = import.meta.env.VITE_APP_NETWORK === "mainnet";
 
 export const supportedChains = [
   // {
@@ -102,13 +102,13 @@ const sdkConfig = {
     // (required) chainId to be used
     chainId: "10", // Arb Goerli: 421613
     // (required for Ethereum) JSON RPC endpoint
-    rpc: process.env.VITE_APP_RPC || "https://mainnet.optimism.io",
+    rpc: import.meta.env.VITE_APP_RPC || "https://mainnet.optimism.io",
   },
 };
 
 const bloctoSDK = new BloctoSDK({
   ...sdkConfig,
-  appId: process.env.REACT_APP_DAPP_ID,
+  appId: import.meta.env.VITE_APP_DAPP_ID,
 }) as ExtendedEvmBloctoSDK;
 
 bloctoSDK.ethereum.loadSwitchableNetwork(supportedChains);

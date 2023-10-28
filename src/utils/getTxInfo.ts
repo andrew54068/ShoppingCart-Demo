@@ -1,7 +1,7 @@
 
 import { web3 } from 'src/services/evm';
 
-export default async function getTxData(txHashes: string[]):
+export default async function getTxInfo(txHashes: string[]):
   Promise<{ data: string | undefined; to: string | null | undefined; value: string; }[]> {
   const results = await Promise.all(
     txHashes.map(async txHash => {
