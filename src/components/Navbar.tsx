@@ -57,9 +57,9 @@ export default function Navbar() {
       boxShadow="0 0 10px 0 rgba(0, 0, 0, 0.05)"
     >
       <Flex justify="space-between" alignItems="center" width="100%">
-        <Box>
-          <Link to="/build-link">
-            Build Tx Link (Logo)
+        <Box fontSize="size.heading.4" fontWeight="weight.l">
+          <Link to="/build-link" >
+            Build Transaction Link
           </Link>
         </Box>
         <IconButton

@@ -149,9 +149,9 @@ const App: React.FC = () => {
       pt="space.3xl"
       px="20px"
     >
-      <Heading as="h3" fontSize="size.heading.3" mb="space.m">
+      <Text fontWeight="weight.l" fontSize="size.heading.3" mb="space.m">
         Build Your Link
-      </Heading>
+      </Text>
       <Text fontSize="lg" mb="space.m" >
         Enter Transaction Hash
       </Text>
@@ -173,7 +173,7 @@ const App: React.FC = () => {
           </Flex>
           {
             txDataWithMethodInfo.length > index &&
-            <Tag key={`Text ${index}`} variant='outline' colorScheme="blue" mb="space.xs">
+            <Tag key={`Text ${index}`} mb="space.xs" >
               Possible Intent: {txDataWithMethodInfo[index].readableCallData}
             </Tag>
           }
@@ -194,13 +194,15 @@ const App: React.FC = () => {
         bottom="0"
         left="0"
         right="0">
-        <Text fontSize="size.heading.3" mb="20px">
+        <Text fontSize="size.body.2" mb="20px">
           Your Link For Sharing
         </Text>
 
 
         <Box mb="20px">
           <Input
+            placeholder='Your link will be shown here'
+            isReadOnly
             value={
               txDataWithMethodInfo.length ?
                 txLink :

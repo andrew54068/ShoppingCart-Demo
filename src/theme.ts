@@ -2,6 +2,24 @@ import boTheme from "@blocto/web-chakra-theme";
 import { extendTheme } from "@chakra-ui/react";
 import merge from "lodash.merge";
 
+import { tagAnatomy } from '@chakra-ui/anatomy'
+import { createMultiStyleConfigHelpers } from '@chakra-ui/react'
+
+const { definePartsStyle, defineMultiStyleConfig } =
+  createMultiStyleConfigHelpers(tagAnatomy.keys)
+
+const baseStyle = definePartsStyle({
+  container: {
+    bg: " background.secondary",
+    color: "font.highlight",
+    py: "4px",
+    px: "10px"
+  },
+})
+const tagTheme = defineMultiStyleConfig({
+  baseStyle,
+})
+
 const IS_PROD = import.meta.env.VITE_APP_ENV === "production";
 
 const theme = extendTheme(
@@ -42,6 +60,7 @@ const theme = extendTheme(
       },
     },
     components: {
+      Tag: tagTheme,
       Button: {
         fontSize: "size.heading.5",
         fontWeight: "weight.l",
