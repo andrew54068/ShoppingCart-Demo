@@ -7,6 +7,7 @@ import { bloctoSDK } from 'src/services/evm';
 import strip0x from 'src/utils/strip0x';
 import toHex from 'src/utils/toHex';
 import { useEthereum } from "src/services/evm";
+import WalletIcon from 'src/assets/wallet.svg?react';
 
 import { ADDR_PLACEHOLDER } from 'src/constants';
 
@@ -120,9 +121,10 @@ const ViewTransaction: React.FC = () => {
               </Flex>
             ))}
           </VStack>
-        )) : <Flex direction="column" alignItems="center" justify="center" h="calc(100vh - 75px)">
-          <Text>You need to connect your wallet to view your transaction.</Text>
-          <Button mt="20px" onClick={connect} variant="support">Connect Wallet</Button>
+        )) : <Flex direction="column" alignItems="center" h="calc(100vh - 75px)" mt="80px">
+          <WalletIcon width="72px" height="72px" />
+          <Text mt="space.s" mb="space.3xl" textAlign="center">You need to connect your wallet to view your transaction.</Text>
+          <Button w="100%" onClick={connect} variant="support">Connect Wallet</Button>
         </Flex>
       }
 
