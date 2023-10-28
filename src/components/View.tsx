@@ -18,6 +18,13 @@ interface TransactionInfo {
   to: string;
   value: string;
   name: string;
+  methodData: {
+    name: string;
+    parameters: {
+      name: string;
+      value: string;
+    }[];
+  }
   parameters: TxParameter[];
 }
 
@@ -25,6 +32,7 @@ const ViewTransaction: React.FC = () => {
   const location = useLocation();
   const { account, connect } = useEthereum();
   const [displayTxInfo, setDisplayTxInfo] = useState<TransactionInfo[]>([]);
+  console.log('displayTxInfo :', displayTxInfo);
 
 
   useEffect(() => {
@@ -71,7 +79,7 @@ const ViewTransaction: React.FC = () => {
             </Flex>
 
             {
-              tx.name && <>
+              tx?.methodData.name && <>
                 <Divider />
                 <Flex>
 
@@ -79,13 +87,13 @@ const ViewTransaction: React.FC = () => {
                     Method:
                   </Text>
                   <Box as="span" ml="4px">
-                    {tx.name}
+                    {tx.methodData.name}
                   </Box>
                 </Flex>
               </>
             }
 
-            {tx.parameters && tx.parameters.map((param, pIndex) => (
+            {tx?.methodData.parameters && tx?.methodData?.parameters?.map((param, pIndex) => (
               <Flex key={pIndex}>
                 <Text fontWeight="bold">
                   {param.name}

@@ -173,7 +173,7 @@ const App: React.FC = () => {
             <Input
               pr='4.5rem'
 
-              value={txDataWithMethodInfo.length ? window.location.host + "/view?txInfo=" + JSON.stringify(txDataWithMethodInfo) : 'Your link will be shown here'}
+              value={txDataWithMethodInfo.length ? window.location.origin + "/view?txInfo=" + JSON.stringify(txDataWithMethodInfo) : 'Your link will be shown here'}
               isReadOnly
             />
             <InputRightElement w="4.5rem">

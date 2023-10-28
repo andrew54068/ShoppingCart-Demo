@@ -1,12 +1,12 @@
 
 import abiDecoder from 'abi-decoder';
-import { web3 } from 'src/services/evm';
+import Web3 from 'web3';
 import getABI from './getABI';
 
 export default async function getMethodData(contractABI, chainId: number, contract: string, callData?: string) {
   if (!callData) return null
   if (!contractABI || contractABI == '') return null
-
+  const web3 = new Web3();
   abiDecoder.addABI(contractABI)
 
   const decodedData = abiDecoder.decodeMethod(callData);
